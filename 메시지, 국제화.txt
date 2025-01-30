@@ -1,0 +1,35 @@
+##메시지, 국제화##
+메시지, 국제화는 간단하다. 
+만약 상품명을 상품이름으로 변경하려고하면 일일이 다 html에서 변경해줘야한다. 
+하지만 메시지, 국제화를 사용하면 중복을 제거할 수 있다.
+
+그냥 properties파일 만들고
+아래의 메시지소스 인터페이스의 getMessage() 메소드를 사용해 
+properties파일에 저장한 것을 가져오면 된다. 
+
+@Autowired
+MessageSource ms; 
+String result = ms.getMessage("hello", null, null);
+String result = ms.getMessage("hello.name", new Object[]{"Spring"}, null);
+
+
+##웹에 어떻게 적용?##
+근데 이걸 어떻게 웹에 적용하지?? 
+->선배들이 다 자동으로 되도록 만들어놨으니 갖다 쓰면 된다.
+
+타임리프의 ${...}를 사용하여 properties에 저장한 값을 조회할 수 있다.
+ex) <div th:text="#{label.item}"></div>   <- 파라미터사용x
+<p th:text="#{hello.name(${item.itemName})}"></p>   <- 파라미터사용o
+
+!!주의!!
+properties의 값을 웹에서 띄우면 한글이 깨지거나 ??으로 뜨는경우가 있는데
+설정->파일 인코딩으로 이동하여 Default encoding for properties files 를 ISO-8859-1 에서 UTF-8 로 변경하고,  Transparent native-to-ascil conversion 체크하자.
+
+##한글을 영어로 어떻게 변경??##
+message_en.properties에 원하는 값을 저장 후 크롬에서 언어설정을 영어로 변경하면 끝.
+Accept-Language가 변경되기 때문임.
+
+근데 사람들이 설정을 잘 안봐꾸기 때문에 LocaleResolver를 통해 사람이 쿠키,세션을 통해 
+선택하도록 할 수도 있음.
+
+
